@@ -1,8 +1,11 @@
 """Portfolios tab — per-portfolio progress and mission list."""
 from __future__ import annotations
 
+# pyrefly: ignore [missing-import]
 from PySide6.QtCore import Qt
+# pyrefly: ignore [missing-import]
 from PySide6.QtGui import QColor
+# pyrefly: ignore [missing-import]
 from PySide6.QtWidgets import (
     QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
     QProgressBar, QPushButton, QSplitter, QTextEdit,

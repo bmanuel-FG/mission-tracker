@@ -11,15 +11,15 @@ from app.database import models
 
 # Mapping of common CSV column name variants → internal field names
 COLUMN_MAP: dict[str, str] = {
-    # mission id variants
-    "mission id": "mission_id",
-    "missionid": "mission_id",
-    "mission_id": "mission_id",
+    # job id variants
+    "job id": "mission_id",
+    "jobid": "mission_id",
+    "job_id": "mission_id",
     "id": "mission_id",
     # client
-    "client": "client",
-    "client name": "client",
-    "clientname": "client",
+    "customer": "client",
+    "customer name": "client",
+    "customername": "client",
     # portfolio
     "portfolio": "portfolio",
     "portfolio name": "portfolio",
@@ -28,11 +28,7 @@ COLUMN_MAP: dict[str, str] = {
     "status": "status",
     "mission status": "status",
     # date
-    "date": "mission_date",
-    "mission date": "mission_date",
-    "mission_date": "mission_date",
-    "flight date": "mission_date",
-    "flightdate": "mission_date",
+    "capture date": "mission_date",
     # location
     "location": "location",
     "address": "location",

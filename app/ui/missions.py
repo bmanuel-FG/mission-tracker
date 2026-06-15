@@ -1,7 +1,9 @@
 """Missions tab — searchable, filterable, sortable mission table."""
 from __future__ import annotations
 
+# pyrefly: ignore [missing-import]
 from PySide6.QtCore import Qt, QTimer
+# pyrefly: ignore [missing-import]
 from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFormLayout,
     QHBoxLayout, QLabel, QLineEdit, QPushButton,

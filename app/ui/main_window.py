@@ -1,7 +1,9 @@
 """Main application window with sidebar navigation."""
 from __future__ import annotations
 
+# pyrefly: ignore [missing-import]
 from PySide6.QtCore import Qt
+# pyrefly: ignore [missing-import]
 from PySide6.QtWidgets import (
     QHBoxLayout, QLabel, QMainWindow, QPushButton,
     QSizePolicy, QStackedWidget, QVBoxLayout, QWidget,

@@ -1,8 +1,11 @@
 """Reusable widget helpers used across all tabs."""
 from __future__ import annotations
 
+# pyrefly: ignore [missing-import]
 from PySide6.QtCore import Qt
+# pyrefly: ignore [missing-import]
 from PySide6.QtGui import QColor
+# pyrefly: ignore [missing-import]
 from PySide6.QtWidgets import (
     QFrame, QHBoxLayout, QLabel, QSizePolicy, QTableWidget,
     QTableWidgetItem, QVBoxLayout, QWidget,

@@ -1,7 +1,9 @@
 """Dashboard page — summary cards + tables."""
 from __future__ import annotations
 
+# pyrefly: ignore [missing-import]
 from PySide6.QtCore import Qt
+# pyrefly: ignore [missing-import]
 from PySide6.QtWidgets import (
     QComboBox, QHBoxLayout, QLabel, QScrollArea,
     QSizePolicy, QVBoxLayout, QWidget,

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+# pyrefly: ignore [missing-import]
 from PySide6.QtWidgets import (
     QComboBox, QFileDialog, QHBoxLayout, QLabel,
     QPushButton, QTabWidget, QVBoxLayout, QWidget,

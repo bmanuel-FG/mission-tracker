@@ -1,7 +1,9 @@
 """Application entry point."""
 import sys
 
+# pyrefly: ignore [missing-import]
 from PySide6.QtWidgets import QApplication
+# pyrefly: ignore [missing-import]
 from PySide6.QtGui import QIcon
 
 from app.database.schema import init_db

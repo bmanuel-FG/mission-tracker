@@ -3,7 +3,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
+# pyrefly: ignore [missing-import]
 from PySide6.QtCore import Qt, QThread, Signal
+# pyrefly: ignore [missing-import]
 from PySide6.QtWidgets import (
     QFileDialog, QFormLayout, QGroupBox, QHBoxLayout,
     QLabel, QMessageBox, QProgressBar, QPushButton,
