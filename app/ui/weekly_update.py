@@ -66,12 +66,7 @@ class WeeklyUpdatePage(QWidget):
         comp_l.addWidget(self._comp_table)
         tabs.addTab(comp_w, "Completed")
 
-        # Invoiced
-        inv_w = QWidget()
-        inv_l = QVBoxLayout(inv_w)
-        self._inv_table = make_table(["Mission ID", "Previous Status", "New Status"])
-        inv_l.addWidget(self._inv_table)
-        tabs.addTab(inv_w, "Invoiced")
+
 
         # Cancelled
         can_w = QWidget()
@@ -138,7 +133,6 @@ class WeeklyUpdatePage(QWidget):
             table.setHorizontalHeaderLabels(["Mission ID", "Previous Status", "New Status"])
 
         _fill_transitions(self._comp_table, d.get("now_completed", []))
-        _fill_transitions(self._inv_table, d.get("now_invoiced", []))
         _fill_transitions(self._can_table, d.get("now_cancelled", []))
 
         fill_table(self._plan_table, d.get("still_planning", []), ["mission_id", "portfolio_name"])
@@ -175,7 +169,6 @@ class WeeklyUpdatePage(QWidget):
         counts = (
             f"New: {len(d.get('added', []))}  |  "
             f"Completed: {len(d.get('now_completed', []))}  |  "
-            f"Invoiced: {len(d.get('now_invoiced', []))}  |  "
             f"Cancelled: {len(d.get('now_cancelled', []))}  |  "
             f"Still Planning: {len(d.get('still_planning', []))}  |  "
             f"Open Tickets: {len(d.get('open_tickets', []))}"

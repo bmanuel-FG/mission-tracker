@@ -78,6 +78,14 @@ class MainWindow(QMainWindow):
         root.addWidget(sidebar)
         root.addWidget(self._stack)
 
+        # Wire cross-page dependencies
+        from .tickets import TicketsPage
+        from .missions import MissionsPage
+        tickets_page = next((p for p in self._pages if isinstance(p, TicketsPage)), None)
+        missions_page = next((p for p in self._pages if isinstance(p, MissionsPage)), None)
+        if tickets_page and missions_page:
+            tickets_page.set_missions_page(missions_page)
+
         # start on Dashboard
         self._navigate(0)
 

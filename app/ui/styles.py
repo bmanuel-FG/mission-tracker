@@ -1,19 +1,19 @@
 """Shared stylesheet and colour palette."""
 
-ACCENT = "#4A90D9"
-ACCENT_HOVER = "#357ABD"
-BG_DARK = "#1E1E2E"
-BG_MID = "#2A2A3E"
-BG_CARD = "#2E2E42"
-BG_TABLE = "#252535"
-TEXT_PRIMARY = "#E0E0F0"
-TEXT_SECONDARY = "#9090B0"
-TEXT_MUTED = "#606080"
-BORDER = "#3A3A5C"
-SUCCESS = "#4CAF50"
-WARNING = "#FF9800"
-DANGER = "#F44336"
-INFO = "#2196F3"
+ACCENT = "#10B981"
+ACCENT_HOVER = "#059669"
+BG_DARK = "#121212"
+BG_MID = "#1E1E1E"
+BG_CARD = "#242424"
+BG_TABLE = "#1A1A1A"
+TEXT_PRIMARY = "#F3F4F6"
+TEXT_SECONDARY = "#9CA3AF"
+TEXT_MUTED = "#6B7280"
+BORDER = "#374151"
+SUCCESS = "#10B981"
+WARNING = "#F59E0B"
+DANGER = "#EF4444"
+INFO = "#8B5CF6"
 
 STATUS_COLORS = {
     "Completed":   "#4CAF50",
@@ -57,11 +57,11 @@ QMainWindow, QWidget {{
     font-size: 13px;
 }}
 #sidebar QPushButton:hover {{
-    background-color: rgba(74,144,217,0.15);
+    background-color: rgba(16,185,129,0.15);
     color: {TEXT_PRIMARY};
 }}
 #sidebar QPushButton[active="true"] {{
-    background-color: rgba(74,144,217,0.25);
+    background-color: rgba(16,185,129,0.25);
     color: {ACCENT};
     font-weight: 600;
     border-left: 3px solid {ACCENT};
@@ -99,7 +99,7 @@ QTableWidget {{
     border-radius: 6px;
     gridline-color: {BORDER};
     color: {TEXT_PRIMARY};
-    selection-background-color: rgba(74,144,217,0.3);
+    selection-background-color: rgba(16,185,129,0.3);
 }}
 QTableWidget::item {{
     padding: 6px 8px;
@@ -152,7 +152,7 @@ QPushButton:hover {{
     background-color: {ACCENT_HOVER};
 }}
 QPushButton:pressed {{
-    background-color: #2A6099;
+    background-color: #047857;
 }}
 QPushButton#secondary {{
     background-color: {BG_CARD};

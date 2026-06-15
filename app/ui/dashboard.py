@@ -55,8 +55,7 @@ class DashboardPage(QWidget):
         self._cards: dict[str, SummaryCard] = {}
         card_defs = [
             ("total",       "Total Missions", ACCENT),
-            ("completed",   "Completed",      SUCCESS),
-            ("invoiced",    "Invoiced",       INFO),
+            ("completed",   "Completed",      INFO),
             ("planning",    "Planning",       WARNING),
             ("cancelled",   "Cancelled",      DANGER),
             ("in_progress", "In Progress",    "#9C27B0"),

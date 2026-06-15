@@ -14,8 +14,8 @@ from app.database import models
 from .widgets import SectionHeader, fill_table, make_table
 
 
-COLS = ["mission_id", "status", "client_name", "portfolio_name", "mission_date", "location", "pilot", "updated_at"]
-HEADERS = ["Mission ID", "Status", "Client", "Portfolio", "Date", "Location", "Pilot", "Updated"]
+COLS = ["mission_id", "status", "client_name", "portfolio_name", "mission_date", "location", "pilot", "ticket_id", "updated_at"]
+HEADERS = ["Mission ID", "Status", "Client", "Portfolio", "Date", "Location", "Pilot", "Ticket", "Updated"]
 STATUSES = ["All", "Planning", "In Progress", "Completed", "Invoiced", "Cancelled", "Unknown"]
 
 
@@ -122,14 +122,17 @@ class MissionsPage(QWidget):
         rows = models.list_missions(self._build_filters())
         display = []
         for r in rows:
+            mid = r.get("mission_id")
+            open_ticket = models.get_open_ticket_for_mission(mid) if mid else None
             display.append({
-                "mission_id":     r.get("mission_id"),
+                "mission_id":     mid,
                 "status":         r.get("status"),
                 "client_name":    r.get("client_name") or "—",
                 "portfolio_name": r.get("portfolio_name") or "—",
                 "mission_date":   r.get("mission_date") or "—",
                 "location":       r.get("location") or "—",
                 "pilot":          r.get("pilot") or "—",
+                "ticket_id":      open_ticket or "—",
                 "updated_at":     (r.get("updated_at") or "")[:16],
             })
         fill_table(self._table, display, COLS)

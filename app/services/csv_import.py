@@ -50,7 +50,7 @@ def _normalise_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _clean_mission_id(val: str) -> str:
-    return str(val).strip().upper().replace(" ", "-")
+    return str(val).strip().replace(",", "").replace(" ", "-").upper()
 
 
 def import_csv(file_path: str | Path) -> dict:
@@ -99,7 +99,7 @@ def import_csv(file_path: str | Path) -> dict:
             "mission_id": mission_id,
             "client_id": client_id,
             "portfolio_id": portfolio_id,
-            "status": str(row.get("status", "Unknown")).strip(),
+            "status": str(row.get("status", "Unknown")).strip().title(),
             "mission_date": str(row.get("mission_date", "")).strip() or None,
             "location": str(row.get("location", "")).strip() or None,
             "pilot": str(row.get("pilot", "")).strip() or None,

@@ -26,6 +26,7 @@ HEADERS = ["Ticket ID", "Mission ID", "Priority", "Status", "Category", "Client"
 class TicketsPage(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._missions_page = None  # set by MainWindow after construction
         self._build_ui()
 
     def _build_ui(self) -> None:
@@ -81,6 +82,10 @@ class TicketsPage(QWidget):
         self._timer.setInterval(300)
         self._timer.timeout.connect(self._reload)
 
+    def set_missions_page(self, page) -> None:
+        """Called by MainWindow so we can trigger a missions refresh when tickets change."""
+        self._missions_page = page
+
     def refresh(self) -> None:
         self._reload()
 
@@ -95,6 +100,9 @@ class TicketsPage(QWidget):
         pr = self._priority_cb.currentText()
         if pr != "All Priorities":
             f["priority"] = pr
+        # When no specific status filter, hide Closed by default
+        if "status" not in f:
+            f["hide_closed"] = True
         return f
 
     def _schedule_reload(self) -> None:
@@ -123,6 +131,8 @@ class TicketsPage(QWidget):
         dlg = TicketDialog(parent=self)
         if dlg.exec() == QDialog.Accepted:
             self._reload()
+            if self._missions_page and hasattr(self._missions_page, "refresh"):
+                self._missions_page.refresh()
 
     def _open_edit_dialog(self) -> None:
         row = self._table.currentRow()
@@ -133,6 +143,8 @@ class TicketsPage(QWidget):
         dlg = TicketDialog(ticket_id=ticket_id, parent=self)
         if dlg.exec() == QDialog.Accepted:
             self._reload()
+            if self._missions_page and hasattr(self._missions_page, "refresh"):
+                self._missions_page.refresh()
 
 
 class TicketDialog(QDialog):

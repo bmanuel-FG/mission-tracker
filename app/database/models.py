@@ -94,11 +94,10 @@ def get_portfolio_summary() -> list[dict]:
             SELECT
                 p.id, p.name AS portfolio, c.name AS client,
                 COUNT(m.id) AS total,
-                SUM(CASE WHEN m.status='Completed'  THEN 1 ELSE 0 END) AS completed,
-                SUM(CASE WHEN m.status='Invoiced'   THEN 1 ELSE 0 END) AS invoiced,
-                SUM(CASE WHEN m.status='Planning'   THEN 1 ELSE 0 END) AS planning,
-                SUM(CASE WHEN m.status='Cancelled'  THEN 1 ELSE 0 END) AS cancelled,
-                SUM(CASE WHEN m.status='In Progress' THEN 1 ELSE 0 END) AS in_progress,
+                SUM(CASE WHEN m.status COLLATE NOCASE IN ('ready to invoice', 'client invoiced', 'completed') THEN 1 ELSE 0 END) AS completed,
+                SUM(CASE WHEN m.status COLLATE NOCASE IN ('under mc review', 'logistics coordination', 'planning') THEN 1 ELSE 0 END) AS planning,
+                SUM(CASE WHEN m.status COLLATE NOCASE IN ('cancelled', 'dead') THEN 1 ELSE 0 END) AS cancelled,
+                SUM(CASE WHEN m.status COLLATE NOCASE IN ('data uploading', 'awaiting flight', 'pilot checked in', 'in progress') THEN 1 ELSE 0 END) AS in_progress,
                 p.notes
             FROM portfolios p
             LEFT JOIN clients c ON c.id = p.client_id
@@ -247,11 +246,10 @@ def get_dashboard_metrics(filters: dict | None = None) -> dict:
         row = conn.execute(f"""
             SELECT
                 COUNT(*)                                                          AS total,
-                SUM(CASE WHEN m.status='Completed'   THEN 1 ELSE 0 END)          AS completed,
-                SUM(CASE WHEN m.status='Invoiced'    THEN 1 ELSE 0 END)          AS invoiced,
-                SUM(CASE WHEN m.status='Planning'    THEN 1 ELSE 0 END)          AS planning,
-                SUM(CASE WHEN m.status='Cancelled'   THEN 1 ELSE 0 END)          AS cancelled,
-                SUM(CASE WHEN m.status='In Progress' THEN 1 ELSE 0 END)          AS in_progress
+                SUM(CASE WHEN m.status COLLATE NOCASE IN ('ready to invoice', 'client invoiced', 'completed') THEN 1 ELSE 0 END) AS completed,
+                SUM(CASE WHEN m.status COLLATE NOCASE IN ('under mc review', 'logistics coordination', 'planning') THEN 1 ELSE 0 END) AS planning,
+                SUM(CASE WHEN m.status COLLATE NOCASE IN ('cancelled', 'dead') THEN 1 ELSE 0 END) AS cancelled,
+                SUM(CASE WHEN m.status COLLATE NOCASE IN ('data uploading', 'awaiting flight', 'pilot checked in', 'in progress') THEN 1 ELSE 0 END) AS in_progress
             FROM missions m
             LEFT JOIN clients c ON c.id = m.client_id
             LEFT JOIN portfolios p ON p.id = m.portfolio_id
@@ -282,7 +280,7 @@ def get_dashboard_metrics(filters: dict | None = None) -> dict:
 
         by_portfolio = _rows_to_list(conn.execute(f"""
             SELECT p.name AS portfolio, COUNT(*) AS total,
-                   SUM(CASE WHEN m.status IN ('Completed','Invoiced') THEN 1 ELSE 0 END) AS done
+                   SUM(CASE WHEN m.status COLLATE NOCASE IN ('ready to invoice', 'client invoiced', 'completed') THEN 1 ELSE 0 END) AS done
             FROM missions m
             LEFT JOIN clients c ON c.id = m.client_id
             LEFT JOIN portfolios p ON p.id = m.portfolio_id
@@ -383,15 +381,14 @@ def get_weekly_diff(current_import_id: int, previous_import_id: int | None) -> d
             WHERE ic.import_id=? AND ic.change_type='updated' AND ic.field_name='status'
         """, (current_import_id,)).fetchall())
 
-        now_completed = [r for r in status_changes if r["new_value"] == "Completed"]
-        now_invoiced   = [r for r in status_changes if r["new_value"] == "Invoiced"]
-        now_cancelled  = [r for r in status_changes if r["new_value"] == "Cancelled"]
+        now_completed = [r for r in status_changes if r["new_value"].lower() in ("ready to invoice", "client invoiced", "completed")]
+        now_cancelled = [r for r in status_changes if r["new_value"].lower() in ("cancelled", "dead")]
         still_planning = _rows_to_list(conn.execute("""
             SELECT m.mission_id, c.name AS client_name, p.name AS portfolio_name
             FROM missions m
             LEFT JOIN clients c ON c.id = m.client_id
             LEFT JOIN portfolios p ON p.id = m.portfolio_id
-            WHERE m.status = 'Planning'
+            WHERE m.status COLLATE NOCASE IN ('under mc review', 'logistics coordination', 'planning')
             ORDER BY m.mission_id
         """).fetchall())
 
@@ -410,7 +407,6 @@ def get_weekly_diff(current_import_id: int, previous_import_id: int | None) -> d
         "added": added,
         "status_changes": status_changes,
         "now_completed": now_completed,
-        "now_invoiced": now_invoiced,
         "now_cancelled": now_cancelled,
         "still_planning": still_planning,
         "open_tickets": open_tickets,
@@ -458,6 +454,8 @@ def list_tickets(filters: dict | None = None) -> list[dict]:
     if filters.get("status"):
         clauses.append("status = ?")
         params.append(filters["status"])
+    elif filters.get("hide_closed"):
+        clauses.append("status != 'Closed'")
     if filters.get("priority"):
         clauses.append("priority = ?")
         params.append(filters["priority"])
@@ -480,6 +478,16 @@ def get_ticket(ticket_id: str) -> dict:
         return _row_to_dict(conn.execute(
             "SELECT * FROM tickets WHERE ticket_id=?", (ticket_id,)
         ).fetchone())
+
+
+def get_open_ticket_for_mission(mission_id: str) -> str | None:
+    """Return the ticket_id of the first non-Closed ticket for the mission, or None."""
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT ticket_id FROM tickets WHERE mission_id=? AND status != 'Closed' ORDER BY created_at LIMIT 1",
+            (mission_id,),
+        ).fetchone()
+        return row["ticket_id"] if row else None
 
 
 def update_ticket(ticket_id: str, data: dict) -> None:
@@ -532,12 +540,11 @@ def save_weekly_snapshot(import_id: int) -> None:
             INSERT INTO weekly_snapshots
                 (snapshot_date, import_id, total_missions, completed, invoiced,
                  planning, cancelled, in_progress, summary_json)
-            VALUES (date('now'), ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (date('now'), ?, ?, ?, 0, ?, ?, ?, ?)
         """, (
             import_id,
             metrics.get("total", 0),
             metrics.get("completed", 0),
-            metrics.get("invoiced", 0),
             metrics.get("planning", 0),
             metrics.get("cancelled", 0),
             metrics.get("in_progress", 0),
