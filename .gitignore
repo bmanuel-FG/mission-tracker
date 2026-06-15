@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.spec.bak
+
+# Data / DB (local only — never commit client data)
+data/*.db
+data/*.sqlite
+data/*.csv
+
+# PyInstaller output
+dist/
+build/
+
+# VS Code / IDE
+.vscode/
+.idea/
+*.swp
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Environment
+.env
+venv/
+.venv/
