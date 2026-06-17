@@ -1,19 +1,19 @@
 """Shared stylesheet and colour palette."""
 
-ACCENT = "#10B981"
-ACCENT_HOVER = "#059669"
-BG_DARK = "#121212"
-BG_MID = "#1E1E1E"
-BG_CARD = "#242424"
-BG_TABLE = "#1A1A1A"
-TEXT_PRIMARY = "#F3F4F6"
-TEXT_SECONDARY = "#9CA3AF"
-TEXT_MUTED = "#6B7280"
-BORDER = "#374151"
+ACCENT = "#6366F1"        # Indigo 500
+ACCENT_HOVER = "#4F46E5"  # Indigo 600
+BG_DARK = "#0F172A"       # Slate 900
+BG_MID = "#1E293B"        # Slate 800
+BG_CARD = "#1E293B"       # Slate 800
+BG_TABLE = "#0F172A"      # Slate 900
+TEXT_PRIMARY = "#E2E8F0"  # Slate 200
+TEXT_SECONDARY = "#94A3B8"# Slate 400
+TEXT_MUTED = "#64748B"    # Slate 500
+BORDER = "#334155"        # Slate 700
 SUCCESS = "#10B981"
 WARNING = "#F59E0B"
 DANGER = "#EF4444"
-INFO = "#8B5CF6"
+INFO = "#3B82F6"
 
 STATUS_COLORS = {
     "Completed":   "#4CAF50",
@@ -57,11 +57,11 @@ QMainWindow, QWidget {{
     font-size: 13px;
 }}
 #sidebar QPushButton:hover {{
-    background-color: rgba(16,185,129,0.15);
+    background-color: rgba(99, 102, 241, 0.15);
     color: {TEXT_PRIMARY};
 }}
 #sidebar QPushButton[active="true"] {{
-    background-color: rgba(16,185,129,0.25);
+    background-color: rgba(99, 102, 241, 0.25);
     color: {ACCENT};
     font-weight: 600;
     border-left: 3px solid {ACCENT};
@@ -95,26 +95,31 @@ QMainWindow, QWidget {{
 /* ── Tables ──────────────────────────────── */
 QTableWidget {{
     background-color: {BG_TABLE};
+    alternate-background-color: {BG_MID};
     border: 1px solid {BORDER};
-    border-radius: 6px;
-    gridline-color: {BORDER};
+    border-radius: 8px;
+    gridline-color: transparent;
     color: {TEXT_PRIMARY};
-    selection-background-color: rgba(16,185,129,0.3);
+    selection-background-color: rgba(99, 102, 241, 0.2);
+    selection-color: {TEXT_PRIMARY};
 }}
 QTableWidget::item {{
-    padding: 6px 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid {BG_MID};
 }}
 QHeaderView::section {{
     background-color: {BG_MID};
     color: {TEXT_SECONDARY};
-    padding: 8px;
+    padding: 10px 12px;
     border: none;
-    border-bottom: 1px solid {BORDER};
+    border-bottom: 2px solid {BORDER};
     font-weight: 600;
-    font-size: 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }}
 QHeaderView::section:hover {{
-    background-color: {BG_CARD};
+    background-color: {BORDER};
 }}
 
 /* ── Inputs ──────────────────────────────── */

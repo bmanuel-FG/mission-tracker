@@ -68,7 +68,6 @@ def make_table(columns: list[str]) -> QTableWidget:
     t.setEditTriggers(QTableWidget.NoEditTriggers)
     t.setSelectionBehavior(QTableWidget.SelectRows)
     t.setAlternatingRowColors(True)
-    t.setStyleSheet("alternate-background-color: rgba(255,255,255,0.03);")
     t.verticalHeader().setVisible(False)
     t.horizontalHeader().setStretchLastSection(True)
     t.setSortingEnabled(True)
